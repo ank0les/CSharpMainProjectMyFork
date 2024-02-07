@@ -17,20 +17,14 @@ namespace UnitBrains.Player
         private float _cooldownTime = 0f;
         private bool _overheated;
         List<Vector2Int> outOfReachTargets = new List<Vector2Int>();
+        
 
-        public static int counter = 0;
-
-        public void UnitNumber()
-        {
-            if (IsTargetInRange(outOfReachTargets(1)))
-            {
-                counter = outOfReachTargets(1);
-            }
-
-            
-        }
-
+        public static int Counter = 0;
         const int MaxTargets = 4;
+        private int _unitID = Counter++;
+
+
+        
         protected override void GenerateProjectiles(Vector2Int forTarget, List<BaseProjectile> intoList)
         {
             float overheatTemperature = OverheatTemperature;
@@ -74,34 +68,6 @@ namespace UnitBrains.Player
         {
 
             List<Vector2Int> result = new List<Vector2Int>();
-            float Min = float.MaxValue;
-            Vector2Int bestTarget = Vector2Int.zero;
-
-            foreach (Vector2Int i in GetAllTargets())
-            {
-                float distance = DistanceToOwnBase(i);
-
-                if (distance < Min)
-                {
-                    Min = distance;
-                    bestTarget = i;
-                }
-
-            }
-            outOfReachTargets.Clear();
-            if (Min < float.MaxValue)
-            {
-                outOfReachTargets.Add(bestTarget);
-                if (IsTargetInRange(bestTarget))
-                {
-                    result.Add(bestTarget);
-                }
-            }
-            else
-            {
-                if (IsPlayerUnitBrain) outOfReachTargets.Add(runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
-            }
-
             outOfReachTargets.Clear();
 
             foreach (Vector2Int i in GetAllTargets())
@@ -109,10 +75,12 @@ namespace UnitBrains.Player
                 outOfReachTargets.Add(i);
 
                 if (IsPlayerUnitBrain) outOfReachTargets.Add(runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
-
                 SortByDistanceToOwnBase(outOfReachTargets);
+            }
 
-                
+            if (!IsPlayerUnitBrain)
+            {
+                Counter++;  
             }
 
             return result;
