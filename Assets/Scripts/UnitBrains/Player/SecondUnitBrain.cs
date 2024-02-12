@@ -16,7 +16,7 @@ namespace UnitBrains.Player
         private float _temperature = 0f;
         private float _cooldownTime = 0f;
         private bool _overheated;
-        List<Vector2Int> outOfReachTargets = new List<Vector2Int>();
+        public List<Vector2Int> outOfReachTargets = new List<Vector2Int>();
         
 
         public static int Counter = 0;
@@ -73,17 +73,18 @@ namespace UnitBrains.Player
             foreach (Vector2Int i in GetAllTargets())
             {
                 outOfReachTargets.Add(i);
-
-                if (IsPlayerUnitBrain) outOfReachTargets.Add(runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
-                SortByDistanceToOwnBase(outOfReachTargets);
             }
+            if (outOfReachTargets.Count == 0) outOfReachTargets.Add(runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
 
-            if (!IsPlayerUnitBrain)
-            {
-                Counter++;  
-            }
+            SortByDistanceToOwnBase(outOfReachTargets);
 
+            int TargetNum = 0;
+            Vector2Int bestTarget = outOfReachTargets[TargetNum];
+
+            
+            if(IsTargetInRange(bestTarget)) result.Add(bestTarget);
             return result;
+            
         }
 
         public override void Update(float deltaTime, float time)
