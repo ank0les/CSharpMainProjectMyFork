@@ -79,10 +79,11 @@ namespace UnitBrains.Player
             SortByDistanceToOwnBase(outOfReachTargets);
 
             int TargetNum = _unitID % MaxTargets;
+
             Vector2Int bestTarget = outOfReachTargets[TargetNum];
 
-            
-            if(IsTargetInRange(bestTarget)) result.Add(bestTarget);
+
+            if (IsTargetInRange(bestTarget)) result.Add(bestTarget);
             return result;
             
         }

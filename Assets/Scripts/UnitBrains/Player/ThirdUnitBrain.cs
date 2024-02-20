@@ -6,6 +6,7 @@ using Model.Runtime.Projectiles;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnitBrains.Player;
+using UnityEngine.XR;
 
 namespace UnitBrains.Player
 {
@@ -13,28 +14,57 @@ namespace UnitBrains.Player
     {
         public string TargetUnitBrain => "Ironclad Behemoth";
 
+        bool IsUnitAttacking = false;
+        bool IsUnitMoving = false;
+        private float _timerStop = 0f;
+        private float _stateChangeTime = 1f;
+
         public override Vector2Int GetNextStep()
         {
-            Update(1, 1);
-            return unit.Pos;
+            if (IsUnitMoving)
+            {
+                return base.GetNextStep();
+
+            }
+            else
+            {
+                return unit.Pos;
+            }
         }
+
+        
 
         protected override List<Vector2Int> SelectTargets()
         {
-            List<Vector2Int> targets = new List<Vector2Int>();
+              return base.SelectTargets();
+        }
 
-            foreach (Vector2Int i in GetAllTargets())
+        public void CurrentState()
+        {
+            if(!HasTargetsInRange())
             {
-                targets.Add(i);
-
-                if (IsPlayerUnitBrain) targets.Add(runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
-                
+                _timerStop += Time.deltaTime;
+                if(_timerStop > _stateChangeTime)
+                {
+                    IsUnitMoving = true;
+                    _timerStop = 0f;
+                }
             }
+            else
+            {
+                _timerStop += Time.deltaTime;
+                if (_timerStop < _stateChangeTime)
+                {
+                    IsUnitMoving = false;
+                    _timerStop = 0f;
+                }
+            }
+        }
 
-
-            Update(1, 1);
-            return targets;
-            
+        public override void Update(float deltaTime, float time)
+        {
+            base.Update(deltaTime, time);
+            CurrentState();    
         }
 
 
