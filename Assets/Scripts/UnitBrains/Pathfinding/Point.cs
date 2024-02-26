@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Core.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.UnitBrains.Pathfinding
 {
@@ -18,6 +21,7 @@ namespace Assets.Scripts.UnitBrains.Pathfinding
         { 
             X = x;
             Y = y;
+
         }
 
         public void CalcEstimate(int targetX, int targetY)
