@@ -11,27 +11,35 @@ namespace Assets.Scripts.UnitBrains.Pathfinding
 {
     public class Point
     {
-        public int X; 
-        public int Y;
-        public int Cost = 10;
+        public Vector2Int coordinates;
+        public int StepCost = 10;
+        public int SecondStepCost = 14;
         public int Estimate;
         public int Value;
+        public Point parent;
 
-        public Point(int x, int y) 
-        { 
-            X = x;
-            Y = y;
-
+        public Point(int x, int y)
+        {
+            this.coordinates = coordinates;
         }
 
         public void CalcEstimate(int targetX, int targetY)
         {
-            Estimate = Math.Abs(X - targetX) + Math.Abs(Y - targetY);
+            Estimate = Math.Abs(coordinates.x - targetX) + Math.Abs(coordinates.y - targetY);
         }
 
-        public void CalcValue()
+        public void CalculateValue(bool isDiagonal)
         {
-            Value = Cost + Estimate;
+            Value = (isDiagonal ? SecondStepCost : StepCost) + Estimate;
+        }
+        public override bool Equals(object? obj)
+        {
+            if (obj is not Point point)
+            {
+                return false;
+            }
+
+            return coordinates.x == point.coordinates.x && coordinates.y == point.coordinates.y;
         }
     }
 }
