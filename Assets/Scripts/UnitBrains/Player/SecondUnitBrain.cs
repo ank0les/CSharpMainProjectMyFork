@@ -54,9 +54,8 @@ namespace UnitBrains.Player
                     return unit.Pos;
                 }
                 else
-                {
-                    var target = CalcNextStepTowards(outOfReachTargets[outOfReachTargets.Count - 1]);
-                    return target;
+                { 
+                    return base.GetNextStep();
                 }
 
             }

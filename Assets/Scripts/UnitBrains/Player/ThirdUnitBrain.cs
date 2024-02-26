@@ -14,7 +14,7 @@ namespace UnitBrains.Player
     {
         public string TargetUnitBrain => "Ironclad Behemoth";
 
-        bool IsUnitAttacking = false;
+        private bool _hasTargets = false;
         bool IsUnitMoving = false;
         private float _timerStop = 0f;
         private float _stateChangeTime = 1f;
@@ -36,12 +36,17 @@ namespace UnitBrains.Player
 
         protected override List<Vector2Int> SelectTargets()
         {
-              return base.SelectTargets();
+            var result = base.SelectTargets();
+            _hasTargets = result.Count > 0;
+
+            if (IsUnitMoving) result.Clear();
+
+            return result;
         }
 
         public void CurrentState()
         {
-            if(!HasTargetsInRange())
+            if(_hasTargets == false)
             {
                 _timerStop += Time.deltaTime;
                 if(_timerStop > _stateChangeTime)
