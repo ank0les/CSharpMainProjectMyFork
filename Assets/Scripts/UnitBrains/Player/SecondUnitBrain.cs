@@ -16,8 +16,8 @@ namespace UnitBrains.Player
         private float _temperature = 0f;
         private float _cooldownTime = 0f;
         private bool _overheated;
-        public List<Vector2Int> outOfReachTargets = new List<Vector2Int>();
-        
+        public List<Vector2Int> allTargets = new List<Vector2Int>();
+
 
         public static int Counter = 0;
         const int MaxTargets = 4;
@@ -47,9 +47,9 @@ namespace UnitBrains.Player
 
         public override Vector2Int GetNextStep()
         {
-            if (outOfReachTargets.Any())
+            if (allTargets.Any())
             {
-                if (IsTargetInRange(outOfReachTargets[0]))
+                if (IsTargetInRange(allTargets[0]))
                 {
                     return unit.Pos;
                 }
@@ -67,24 +67,27 @@ namespace UnitBrains.Player
         {
 
             List<Vector2Int> result = new List<Vector2Int>();
-            outOfReachTargets.Clear();
+            allTargets.Clear();
 
             foreach (Vector2Int i in GetAllTargets())
             {
-                outOfReachTargets.Add(i);
+                allTargets.Add(i);
             }
-            if (outOfReachTargets.Count == 0) outOfReachTargets.Add(runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
+            if (allTargets.Count == 0)
+            {
+                allTargets.Add(runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
+            }
 
-            SortByDistanceToOwnBase(outOfReachTargets);
+            SortByDistanceToOwnBase(allTargets);
 
-            int TargetNum = _unitID % MaxTargets;
+            int TargetNum = 1;
 
-            Vector2Int bestTarget = outOfReachTargets[TargetNum];
+            Vector2Int bestTarget = allTargets[TargetNum];
 
 
             if (IsTargetInRange(bestTarget)) result.Add(bestTarget);
             return result;
-            
+
         }
 
         public override void Update(float deltaTime, float time)
