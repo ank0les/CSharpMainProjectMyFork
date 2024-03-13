@@ -80,7 +80,7 @@ namespace UnitBrains.Player
 
             SortByDistanceToOwnBase(allTargets);
 
-            int TargetNum = 1;
+            int TargetNum = _unitID % MaxTargets;
 
             Vector2Int bestTarget = allTargets[TargetNum];
 
