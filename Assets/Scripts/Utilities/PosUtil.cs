@@ -10,33 +10,35 @@ using Model.Runtime;
 using TowerDefense.UI.HUD;
 using Utilities;
 using System.Net;
+using Assets.Scripts.UnitBrains.Pathfinding;
+using Model.Runtime.ReadOnly;
 
 
 namespace Assets.Scripts.Utilities
 {
     public class PosUtil
     {
+
+        public PosUtil() 
+        { 
+        }
         private bool _onPlayerSide;
         private IReadOnlyRuntimeModel _runtimeModel = ServiceLocator.Get<IReadOnlyRuntimeModel>();
-        private Vector2Int _currentTarget;
-        private Vector2Int _bestTargetForAttack;
-        private Assets.Scripts.UnitBrains.Pathfinding.Point _recomendedPoint;
-        private Assets.Scripts.UnitBrains.Pathfinding.Point _currentPoint;
-
-
-        public Vector2Int UnitUtil(List<Vector2Int> units, IReadOnlyList<Vector2Int> Bases)
+        
+       
+        public Vector2Int UnitUtil(List<Vector2Int> units, List<Vector2Int> Bases, Vector2Int _bestTarget, Vector2Int _currentTarget)
         {
             _currentTarget = units[0];
 
             if(OnPlayerSide(_currentTarget, Bases))
             {
-                _bestTargetForAttack = _currentTarget;
+                _bestTarget = _currentTarget;
             }
 
-            return _bestTargetForAttack;
+            return _bestTarget;
         }
 
-        public Assets.Scripts.UnitBrains.Pathfinding.Point RecomendedPointUtil(List<Assets.Scripts.UnitBrains.Pathfinding.Point> points)
+        public Point RecomendedPointUtil(List<Point> points, Point _currentPoint, Point _recomendedPoint)
         {
             _currentPoint = points[0];
 

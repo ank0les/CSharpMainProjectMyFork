@@ -5,6 +5,9 @@ using Model;
 using Model.Runtime.Projectiles;
 using Unity.VisualScripting;
 using UnityEngine;
+using Assets.Scripts.Utilities;
+using Model.Runtime.ReadOnly;
+using UnityEngine.UIElements;
 
 namespace UnitBrains.Player
 {
@@ -17,7 +20,9 @@ namespace UnitBrains.Player
         private float _cooldownTime = 0f;
         private bool _overheated;
         public List<Vector2Int> allTargets = new List<Vector2Int>();
-
+        public List<Vector2Int> Bases = new List<Vector2Int>();
+        public Vector2Int _currentTarget;
+        
 
         public static int Counter = 0;
         const int MaxTargets = 4;
@@ -65,7 +70,8 @@ namespace UnitBrains.Player
 
         protected override List<Vector2Int> SelectTargets()
         {
-
+            Bases.Add(runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
+            Bases.Add(runtimeModel.RoMap.Bases[RuntimeModel.PlayerId]);
             List<Vector2Int> result = new List<Vector2Int>();
             allTargets.Clear();
 
@@ -81,9 +87,12 @@ namespace UnitBrains.Player
             SortByDistanceToOwnBase(allTargets);
 
             int TargetNum = _unitID % MaxTargets;
-
             Vector2Int bestTarget = allTargets[TargetNum];
 
+            Vector2Int recomendedTarget = PosUtil.UnitUtil(allTargets, Bases, bestTarget, _currentTarget);
+
+            if(recomendedTarget != bestTarget)
+                bestTarget = recomendedTarget;
 
             if (IsTargetInRange(bestTarget)) result.Add(bestTarget);
             return result;
