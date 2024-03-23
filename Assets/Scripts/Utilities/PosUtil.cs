@@ -7,16 +7,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnitBrains.Player;
 using Model.Runtime;
-using TowerDefense.UI.HUD;
 using Utilities;
 using System.Net;
 using Assets.Scripts.UnitBrains.Pathfinding;
 using Model.Runtime.ReadOnly;
+using UnityEngine.UIElements;
 
 
 namespace Assets.Scripts.Utilities
 {
-    public class PosUtil
+    public class PosUtil : MonoBehaviour
     {
 
         public PosUtil() 
@@ -24,8 +24,8 @@ namespace Assets.Scripts.Utilities
         }
         private bool _onPlayerSide;
         private IReadOnlyRuntimeModel _runtimeModel = ServiceLocator.Get<IReadOnlyRuntimeModel>();
-        
-       
+        List<Vector2Int> Bases;
+
         public Vector2Int UnitUtil(List<Vector2Int> units, List<Vector2Int> Bases, Vector2Int _bestTarget, Vector2Int _currentTarget)
         {
             _currentTarget = units[0];
@@ -74,5 +74,16 @@ namespace Assets.Scripts.Utilities
                 return false;
             }
         }
+        public void FixedUpdete(List<Vector2Int> units, Vector2Int _bestTarget, Vector2Int _currentTarget, List<Point> points, Point _currentPoint, Point _recomendedPoint)
+        {
+            Bases.Add(_runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
+            Bases.Add(_runtimeModel.RoMap.Bases[RuntimeModel.PlayerId]);
+
+            
+            UnitUtil(Bases, units, _bestTarget, _currentTarget);
+            RecomendedPointUtil(points, _currentPoint, _recomendedPoint);
+        }
     }
+
+    
 }
