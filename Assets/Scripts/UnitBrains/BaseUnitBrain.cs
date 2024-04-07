@@ -34,6 +34,7 @@ namespace UnitBrains
 
         public virtual Vector2Int GetNextStep()
         {
+
             if (HasTargetsInRange())
                 return unit.Pos;
 

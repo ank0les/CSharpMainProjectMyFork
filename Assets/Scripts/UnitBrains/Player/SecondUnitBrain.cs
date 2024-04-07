@@ -5,7 +5,6 @@ using Model;
 using Model.Runtime.Projectiles;
 using Unity.VisualScripting;
 using UnityEngine;
-using Assets.Scripts.Utilities;
 using Model.Runtime.ReadOnly;
 using UnityEngine.UIElements;
 
@@ -68,6 +67,7 @@ namespace UnitBrains.Player
             return unit.Pos;
         }
 
+
         protected override List<Vector2Int> SelectTargets()
         {
             Bases.Add(runtimeModel.RoMap.Bases[RuntimeModel.BotPlayerId]);
@@ -89,12 +89,10 @@ namespace UnitBrains.Player
             int TargetNum = _unitID % MaxTargets;
             Vector2Int bestTarget = allTargets[TargetNum];
 
-            Vector2Int recomendedTarget = PosUtil.UnitUtil(allTargets, Bases, bestTarget, _currentTarget);
 
-            if(recomendedTarget != bestTarget)
-                bestTarget = recomendedTarget;
+            if (IsTargetInRange(bestTarget))
+                result.Add(bestTarget);
 
-            if (IsTargetInRange(bestTarget)) result.Add(bestTarget);
             return result;
 
         }
