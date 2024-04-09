@@ -4,8 +4,10 @@ using Model.Config;
 using Model.Runtime;
 using UnityEngine;
 using Utilities;
-using Assets.Scripts.Utilities;
 using View;
+using UnitBrains;
+using UnitBrains.Enemy;
+using UnitBrains.Player;
 
 namespace Controller
 {
@@ -19,8 +21,10 @@ namespace Controller
         private readonly Gameplay3dView _gameplayView;
         private readonly Settings _settings;
         private readonly TimeUtil _timeUtil;
-        PosUtil posUtil = new();
-       
+        private BotPosUtil _botUnitUtil;
+        private PlayerPosUtil _playerUnitUtil;
+
+
         public LevelController(RuntimeModel runtimeModel, RootController rootController)
         {
             _runtimeModel = runtimeModel;
@@ -58,17 +62,17 @@ namespace Controller
             if (unitConfig.Cost > _runtimeModel.Money[RuntimeModel.PlayerId])
                 return;
             
-            SpawnUnit(RuntimeModel.PlayerId, unitConfig);
+            SpawnUnit(RuntimeModel.PlayerId, unitConfig, _playerUnitUtil);
             TryStartSimulation();
         }
 
         private void OnBotUnitChosen(UnitConfig unitConfig)
         {
-            SpawnUnit(RuntimeModel.BotPlayerId, unitConfig);
+            SpawnUnit(RuntimeModel.BotPlayerId, unitConfig, _botUnitUtil);
             TryStartSimulation();
         }
 
-        private void SpawnUnit(int forPlayer, UnitConfig config)
+        private void SpawnUnit(int forPlayer, UnitConfig config, ROunitUtil coordinator)
         {
             var pos = _runtimeModel.Map.FindFreeCellNear(
                 _runtimeModel.Map.Bases[forPlayer],
