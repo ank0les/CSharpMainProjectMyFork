@@ -97,7 +97,7 @@ namespace Assets.Scripts.UnitBrains.Pathfinding
             }
             path = FullReverse(currentPoint);
             if (path.Length == 0)
-                Debug.Log("Something went wrong");
+                Debug.Log("Error 1 [ path.Lenght == 0 ]");
         }
         private Vector2Int[] FullReverse(Point currentPoint)
         {
