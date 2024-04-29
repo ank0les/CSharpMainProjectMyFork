@@ -17,39 +17,12 @@ namespace UnitBrains.Pathfinding
 
         public void HighlightPath(BaseUnitPath path)
         {
-            Path = path;
-            while (allHighlights.Count > 0)
-            {
-                DestroyHighlight(0);
-            }
-
-            if (highlightCoroutine == null)
-            {
-                StopCoroutine(highlightCoroutine);
-            }
-
-            highlightCoroutine = StartCoroutine(HighlightCoroutine(path));
+            
         }
 
         private IEnumerator HighlightCoroutine(BaseUnitPath path)
         {
-            while (true)
-            {
-                for (int i = 0; i < Path.GetPath().ToList().Count; i++)
-                {
-                    CreateHighlight(Path.GetPath().ToList()[i]);
-                    yield return new WaitForSeconds(0.1f);
-                    if (i >= maxHighlights - 1)
-                    {
-                        DestroyHighlight(0);
-                    }
-                }
-                while (allHighlights.Count > 0)
-                {
-                    yield return new WaitForSeconds(0.1f);
-                    DestroyHighlight(0);
-                }
-            }
+            return null;
         }
 
         private void CreateHighlight(Vector2Int atCell)
