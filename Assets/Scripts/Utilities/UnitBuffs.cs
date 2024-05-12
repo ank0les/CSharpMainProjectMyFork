@@ -1,97 +1,72 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Model;
+using Assets.Scripts.Controller;
 using Model.Runtime;
 using Model.Runtime.ReadOnly;
-using UnitBrains;
 using UnityEngine;
-using Utilities;
 
-namespace Utilities
+public class UnitBuffs
 {
-    public class UnitBuffs 
+    private Dictionary<Unit, List<Buff>> _buffs = new Dictionary<Unit, List<Buff>>();
+
+    public void AddBuff(Unit unit, Buff buff)
     {
-        bool SpeedUp;
-        bool SpeedDown;
-        bool ShotSpeedUp;
-        bool ShotSpeedDown; 
-        RuntimeModel _runtimeModel = ServiceLocator.Get<RuntimeModel>();
-        float UnitSpeed;
-        float UnitShotSpeed;
-
-        public float GetSpeed()
+        if (!_buffs.ContainsKey(unit))
         {
-            var Units = _runtimeModel.RoUnits.ToList();
-
-            if (Units.Any())
-                return Units.First().Config.MoveDelay;
-            else return 1f;
+            _buffs[(Unit)unit] = new List<Buff>();
         }
-        public float GetShotSpeed()
-        {
-            var Units = _runtimeModel.RoUnits.ToList();
+        _buffs[unit].Add(buff);
+    }
 
-            if (Units.Any())
-                return Units.First().Config.AttackDelay;
-            else return 1f;
-        }
-        public void GetBuffed()
+    public bool HasBuff(Unit unit)
+    {
+        if (_buffs.TryGetValue(unit, out List<Buff> buffs))
         {
-            var Units = _runtimeModel.RoUnits.ToList();
-            GetSpeed();
-            GetShotSpeed();
-            if (Units.First().Health <= Units.First().Health / 2)
-            {
-                ShotSpeedDown = true;
-                ShotSpeedUp = false;
-            }
-                
-            if (Units.First().Health <= Units.First().Health / 4)
-            {
-                ShotSpeedDown = true;
-                ShotSpeedUp = false;
-                SpeedDown = true;
-                SpeedUp = false;
-            }
-                
-            if (Units.First().Health >= Units.First().Health / 4)
-            {
-                ShotSpeedDown = false;
-                ShotSpeedUp = true;
-            }
-            if(Units.First().Health >= Units.First().Health / 2)
-            {
-                ShotSpeedUp = true;
-                SpeedUp = true;
-                ShotSpeedDown = false;
-                SpeedDown = false;
-            }
-            
+            return buffs.Count > 0;
         }
-        public void BuffEffects()
-        {
-            var Units = _runtimeModel.RoUnits.ToList();
-            GetSpeed();
-            GetShotSpeed();
-            GetBuffed();
+        return false;
+    }
 
-            if(SpeedUp)
+    public void Update()
+    {
+        foreach (var pair in _buffs)
+        {
+            for (int i = pair.Value.Count - 1; i >= 0; i--)
             {
-                UnitSpeed *= 1.25f;
-            }
-            if(SpeedDown)
-            {
-                UnitSpeed *= 0.75f;
-            }
-            if(ShotSpeedDown)
-            {
-                UnitShotSpeed *= 0.75f;
-            }
-            if (ShotSpeedDown)
-            {
-                UnitShotSpeed *= 1.25f;
+                pair.Value[i].MinusDuration(Time.deltaTime);
+                if (pair.Value[i].Duration <= 0)
+                {
+                    pair.Value.RemoveAt(i);
+                }
             }
         }
     }
+
+    public float GetMoveSpeed(Unit unit)
+    {
+        float modifier = 1.0f;
+        if (_buffs.ContainsKey(unit))
+        {
+            foreach (var buff in _buffs[unit])
+            {
+                modifier *= buff.MoveSpeedModifier;
+            }
+        }
+        return modifier;
+    }
+
+    public float GetAttackSpeed(Unit unit)
+    {
+        float modifier = 1.0f;
+        if (_buffs.ContainsKey(unit))
+        {
+            foreach (var buff in _buffs[unit])
+            {
+                modifier *= buff.AttackSpeedModifier;
+            }
+        }
+        return modifier;
+    }
+
+
+
 }
