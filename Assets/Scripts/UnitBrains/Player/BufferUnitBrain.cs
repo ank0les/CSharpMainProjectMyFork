@@ -21,6 +21,7 @@ namespace Assets.Scripts.UnitBrains.Player
         private float buffTimer = 0;
         private float buffInterval = 6.5f;
         UnitBuffs UnitBuffs = new UnitBuffs();
+        BuffsController BuffsController = new BuffsController();
         Buff moveBuff = new Buff(2, 1, 0);
         Buff attackBuff = new Buff(2, 0, 1);
         private IEnumerable<IReadOnlyUnit> RoPlayerUnits;
