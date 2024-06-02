@@ -22,8 +22,10 @@ namespace Assets.Scripts.UnitBrains.Player
         private float buffInterval = 6.5f;
         UnitBuffs UnitBuffs = new UnitBuffs();
         BuffsController BuffsController = new BuffsController();
-        Buff moveBuff = new Buff(2, 1, 0);
-        Buff attackBuff = new Buff(2, 0, 1);
+        Buff moveBuff = new Buff(2, 1, 0, 0, 0);
+        Buff attackBuff = new Buff(2, 0, 1, 0, 0);
+        Buff doubleShotBuff = new Buff(2, 0, 0, 1, 0);
+        Buff attackRangeBuff = new Buff(2, 0, 0, 0, 1);
         private IEnumerable<IReadOnlyUnit> RoPlayerUnits;
         private VFXView _vfxView;
 
@@ -46,14 +48,29 @@ namespace Assets.Scripts.UnitBrains.Player
         {
             foreach (Unit myUnit in RoPlayerUnits)
             {
+                var _type = myUnit.Config.UnitType;
                 if (IsTargetInRange(myUnit.Pos))
-                {
+                {  
+                    switch(_type)
+                    {
+                        case "SecondUnit":                                                       
+                            BuffsController.GiveBuff(myUnit, doubleShotBuff);
+                            _vfxView.PlayVFX(myUnit.Pos, VFXView.VFXType.BuffApplied);
+                            break;
+                        case "ThirdUnit":
+                            BuffsController.GiveBuff(myUnit, attackRangeBuff);
+                            _vfxView.PlayVFX(myUnit.Pos, VFXView.VFXType.BuffApplied);
+                            break;
+                    }
                     if (!BuffsController.IsBuffed(myUnit))
                     {
                         BuffsController.GiveBuff(myUnit, buffToApply);
                         _vfxView.PlayVFX(myUnit.Pos, VFXView.VFXType.BuffApplied);
                     }
+                    
                 }
+                
+               
             }
         }
     }
